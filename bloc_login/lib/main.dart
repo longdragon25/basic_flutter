@@ -1,5 +1,10 @@
+import 'package:bloc_login/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:bloc_login/blocs/login/bloc/login_bloc.dart';
 import 'package:bloc_login/blocs/simple_bloc_observer.dart';
 import 'package:bloc_login/repositories/user_repository.dart';
+import 'package:bloc_login/screens/home_screen.dart';
+import 'package:bloc_login/screens/login_screen.dart';
+import 'package:bloc_login/screens/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,13 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  BlocOverrides.runZoned(() {
-    runApp(const MyApp());
-  }, blocObserver: SimpleBlocObserver());
+  Bloc.observer = SimpleBlocObserver();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final UserRepository _userRepository = UserRepository();
 
   // This widget is the root of your application.
   @override
@@ -23,13 +27,26 @@ class MyApp extends StatelessWidget {
     //     "longdragon@gmail.com", "123456");
     return MaterialApp(
         title: 'Login with Firebase',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: Scaffold(
-          body: Center(
-            child: Text("aloalo"),
-          ),
-        ));
+        home: BlocProvider(
+            create: (context) =>
+                AuthenticationBloc(userRepository: _userRepository)
+                  ..add(AuthenticationEventStarted()),
+            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, state) {
+                print(state);
+                if (state is AuthenticationSuccess) {
+                  return HomeScreen();
+                } else if (state is AuthenticationFailure) {
+                  return BlocProvider<LoginBloc>(
+                    create: (context) =>
+                        LoginBloc(userRepository: _userRepository),
+                    child: LoginScreen(
+                      userRepository: _userRepository,
+                    ),
+                  );
+                }
+                return SplashScreen();
+              },
+            )));
   }
 }
