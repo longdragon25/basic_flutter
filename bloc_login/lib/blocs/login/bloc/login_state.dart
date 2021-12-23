@@ -11,6 +11,7 @@ class LoginState {
       required this.isSubmitting,
       required this.isSuccess,
       required this.isFailure});
+
   factory LoginState.initial() {
     return LoginState(
         isValidEmail: true,
@@ -47,17 +48,30 @@ class LoginState {
         isFailure: false);
   }
 
-  LoginState update({
-    bool? isValidEmail,
-    bool? isValidPassword,
-    bool? isSubmitting,
-    bool? isSuccess,
-    bool? isFailure,
-  }) =>
-      LoginState(
-          isValidEmail: isValidEmail ?? this.isValidEmail,
-          isValidPassword: isValidPassword ?? this.isValidPassword,
-          isSubmitting: isSubmitting ?? this.isSubmitting,
-          isSuccess: isSuccess ?? this.isSuccess,
-          isFailure: isFailure ?? this.isFailure);
+  //Clone an object of LoginState?
+  LoginState cloneWith(
+      {bool? isValidEmail,
+      bool? isValidPassword,
+      bool? isSubmitting,
+      bool? isSuccess,
+      bool? isFailure}) {
+    return LoginState(
+        isValidEmail: isValidEmail ??
+            this.isValidPassword, //if isValidEmail == null => isValidEmail unchanged !
+        isValidPassword: isValidPassword ?? this.isValidPassword,
+        isSubmitting: isSubmitting ?? this.isSuccess,
+        isSuccess: isSuccess ?? this.isSuccess,
+        isFailure: isFailure ?? this.isFailure);
+  }
+
+  //How to clone an object and update that object ?
+  LoginState cloneAndUpdate({bool? isValidEmail, bool? isValidPassword}) {
+    return cloneWith(
+      isValidEmail: isValidEmail,
+      isValidPassword: isValidPassword,
+      isSubmitting: false,
+      isSuccess: false,
+      isFailure: false,
+    );
+  }
 }

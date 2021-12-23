@@ -47,17 +47,44 @@ class RegisterState {
         isFailure: false);
   }
 
-  RegisterState update({
+  RegisterState cloneAndUpdate({
     bool? isValidEmail,
     bool? isValidPassword,
+  }) {
+    return copyWith(
+      isValidEmail: isValidEmail,
+      isValidPassword: isValidPassword,
+      isSubmitting: false,
+      isSuccess: false,
+      isFailure: false,
+    );
+  }
+
+  RegisterState copyWith({
+    bool? isValidEmail,
+    bool? isValidPassword,
+    bool? isSubmitEnabled,
     bool? isSubmitting,
     bool? isSuccess,
     bool? isFailure,
-  }) =>
-      RegisterState(
-          isValidEmail: isValidEmail ?? this.isValidEmail,
-          isValidPassword: isValidPassword ?? this.isValidPassword,
-          isSubmitting: isSubmitting ?? this.isSubmitting,
-          isSuccess: isSuccess ?? this.isSuccess,
-          isFailure: isFailure ?? this.isFailure);
+  }) {
+    return RegisterState(
+      isValidEmail: isValidEmail ?? this.isValidEmail,
+      isValidPassword: isValidPassword ?? this.isValidPassword,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      isSuccess: isSuccess ?? this.isSuccess,
+      isFailure: isFailure ?? this.isFailure,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''RegisterState {
+      isValidEmail: $isValidEmail,
+      isValidPassword: $isValidPassword,      
+      isSubmitting: $isSubmitting,
+      isSuccess: $isSuccess,
+      isFailure: $isFailure,
+    }''';
+  }
 }
