@@ -2,7 +2,9 @@ import 'package:bloc_login/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:bloc_login/blocs/login/bloc/login_bloc.dart';
 import 'package:bloc_login/blocs/login/bloc/login_event.dart';
 import 'package:bloc_login/blocs/login/bloc/login_state.dart';
+import 'package:bloc_login/blocs/register/bloc/register_bloc.dart';
 import 'package:bloc_login/repositories/user_repository.dart';
+import 'package:bloc_login/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +17,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, loginState) {
           if (loginState.isFailure) {
@@ -88,7 +91,57 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account ",
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return BlocProvider<RegisterBloc>(
+                                create: (context) => RegisterBloc(
+                                    userRepository: userRepository),
+                                child: RegisterScreen(
+                                    userRepository: userRepository));
+                          }));
+                        },
+                        child: Text("Sin up",
+                            style: TextStyle(fontSize: 18, color: Colors.blue)),
+                      )
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    BlocProvider.of<LoginBloc>(context)
+                        .add(LoginEventWithGooglePressed());
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 50,
+                    margin: EdgeInsets.only(top: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Login with Google",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             )),
           );
