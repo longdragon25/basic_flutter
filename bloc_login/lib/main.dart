@@ -35,7 +35,9 @@ class MyApp extends StatelessWidget {
               builder: (context, state) {
                 print(state);
                 if (state is AuthenticationSuccess) {
-                  return HomeScreen();
+                  return HomeScreen(
+                    user: state.user,
+                  );
                 } else if (state is AuthenticationFailure) {
                   return BlocProvider<LoginBloc>(
                     create: (context) =>

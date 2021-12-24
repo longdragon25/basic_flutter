@@ -1,9 +1,11 @@
 import 'package:bloc_login/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.user}) : super(key: key);
+  final User? user;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          "Home Screen",
+          "Hello! ${user!.email}",
           style: TextStyle(fontSize: 22),
         ),
       ),
